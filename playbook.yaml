@@ -1,0 +1,147 @@
+- name: Build MISP and Cortex
+  hosts: '{{ target }}'
+  tasks:
+  - name: Install aptitude
+    become: true
+    apt:
+      name: aptitude
+      state: latest
+      update_cache: true
+
+  - name: Install required system packages
+    become: true
+    apt:
+      pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - gnupg
+      - lsb-release
+      - python3-pip
+      state: latest
+      update_cache: true
+
+  - name: Add Docker GPG apt Key
+    become: true
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+
+  - name: Get OS version
+    become: true
+    command: lsb_release -cs
+    register: osver
+
+  - name: Add Docker Repository
+    become: true
+    apt_repository:
+      repo: deb https://download.docker.com/linux/ubuntu jammy stable
+      state: present
+
+  - name: Update apt and install Docker
+    become: true
+    apt:
+      pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+      - python3-docker
+      - docker-compose
+      state: latest
+      update_cache: true
+
+  - name: Create Cortex directories
+    become: true
+    file:
+      path: "{{ item }}"
+      state: directory
+      owner: systems
+      group: systems
+      mode: 0775
+    loop:
+      - /misp-cortex
+      - /misp-cortex/cortex
+      - /misp-cortex/cortex/cortex-jobs
+      - /misp-cortex/cortex/data
+      - /misp-cortex/cortex/logs
+
+  - name: Clone MISP repository
+    git:
+      repo: 'https://github.com/misp/misp-docker'
+      dest: /misp-cortex/misp/
+
+  - name: Create MISP directories
+    become: true
+    file:
+      path: "{{ item }}"
+      state: directory
+      owner: systems
+      group: systems
+      mode: 0775
+    loop:
+      - /misp-cortex
+      - /misp-cortex/cortex
+      - /misp-cortex/cortex/cortex-jobs
+      - /misp-cortex/cortex/data
+      - /misp-cortex/cortex/logs
+      - /misp-cortex/misp/data
+      - /misp-cortex/misp/data/web
+
+  - name: Copy Cortex compose file to cortex folder
+    copy:
+      src: ./cortex-compose.yml
+      dest: /misp-cortex/cortex/docker-compose.yml
+
+  - name: Copy customised .env file to misp folder
+    copy:
+      src: ./.env
+      dest: /misp-cortex/misp/.env
+
+  - name: Install Docker SDK for Python
+    pip:
+      name: docker
+
+  - name: Install Docker Compose
+    pip:
+      name: docker-compose
+
+  - name: Enable Docker service on boot
+    become: true
+    systemd:
+      name: docker
+      enabled: yes
+
+  - name: Enable Containerd service on boot
+    become: true
+    systemd:
+      name: containerd
+      enabled: yes
+
+  - name: Start Docker service
+    become: true
+    service:
+      name: docker
+      state: started
+
+  - name: Start Containerd service
+    become: true
+    service:
+      name: containerd
+      state: started
+
+  - name: Run MISP Docker container
+    become: true
+    community.docker.docker_compose:
+      project_src: /misp-cortex/misp/
+    vars:
+      ansible_python_interpreter: /usr/bin/python3
+
+  - name: Run Cortex Docker container
+    become: true
+    community.docker.docker_compose:
+      project_src: /misp-cortex/cortex/
+      project_name: misp-cortex
+    vars:
+      ansible_python_interpreter: /usr/bin/python3
