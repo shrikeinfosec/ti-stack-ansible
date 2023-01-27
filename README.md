@@ -3,7 +3,9 @@
 This repo provides a baseline template for deploying [MISP](https://github.com/MISP/MISP) and [Cortex](https://github.com/TheHive-Project/Cortex) to a newly-provisioned Ubuntu 22.04 machine (Jammy).
 
 > [!note]
-> This is a work-in-progress repository, and should not be considered production-safe for all environments.
+> This is a work-in-progress repository, and should not be considered production-safe for all environments. 
+> 
+> These configurations may not be sufficiently hardened for your environment.
 
 # Pre-Requisites
 
@@ -57,7 +59,7 @@ ansible-playbook playbook.yaml --extra-vars "target=<hostname.local>" --ask-pass
 
 Where `<hostname.local>` is your FQDN for your target node. This allows you to specify the host you want to target.
 
-> **Note**
+> [!note]
 >
 > This does not bypass the requirement of having your host listed in an Ansible inventory. 
 > 
@@ -85,7 +87,7 @@ This specifies that the Python3 interpreter is used when running commands from t
 
 Once you have run this command, Ansible will run through the process of provisioning the machine.
 
-> **Note**
+> [!note]
 >
 > This can take up to 30 minutes to complete, as Docker will need to download all of the base images and run the install scripts for MISP. Ansible will most likely appear stuck at the 'Run MISP Docker container' stage while this happens.
 
