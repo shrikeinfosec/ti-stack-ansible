@@ -3,6 +3,7 @@
 This repo provides a baseline template for deploying [MISP](https://github.com/MISP/MISP) and [Cortex](https://github.com/TheHive-Project/Cortex) to a newly-provisioned Ubuntu 22.04 machine (Jammy).
 
 > **Note**
+> 
 > This is a work-in-progress repository, and should not be considered production-safe for all environments. 
 > 
 > These configurations may not be sufficiently hardened for your environment.
