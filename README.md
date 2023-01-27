@@ -1,4 +1,4 @@
-# MISP Stack with Ansible
+# Threat Intel Stack with Ansible
 
 This repo provides a baseline template for deploying [MISP](https://github.com/MISP/MISP) and [Cortex](https://github.com/TheHive-Project/Cortex) to a newly-provisioned Ubuntu 22.04 machine (Jammy).
 
