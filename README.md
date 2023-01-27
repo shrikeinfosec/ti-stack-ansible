@@ -74,17 +74,15 @@ Where `<hostname.local>` is your FQDN for your target node. This allows you to s
 
 Asks for the SSH password so that it does not need to be stored in the playbook file.
 
----
-
 > `--ask-become-pass`
 
 Asks for the password to become root via `sudo` (for the target machine).
 
----
-
 > `-e 'ansible_python_interpreter=/usr/bin/python3'`
 
 This specifies that the Python3 interpreter is used when running commands from the control node.
+
+---
 
 Once you have run this command, Ansible will run through the process of provisioning the machine.
 
