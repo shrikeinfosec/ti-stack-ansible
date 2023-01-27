@@ -69,7 +69,6 @@ Where `<hostname.local>` is your FQDN for your target node. This allows you to s
 >
 > For more information, see ['Building Ansible inventories'](https://docs.ansible.com/ansible/latest/inventory_guide/index.html).
 
----
 > `--ask-pass`
 
 Asks for the SSH password so that it does not need to be stored in the playbook file.
